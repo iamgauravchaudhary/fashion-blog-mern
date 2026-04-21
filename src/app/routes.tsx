@@ -8,6 +8,7 @@ import { OutfitSuggestions } from "./pages/OutfitSuggestions";
 import { MyWardrobe } from "./pages/MyWardrobe";
 import { SavedOutfits } from "./pages/SavedOutfits";
 import { Community } from "./pages/Community";
+import { SavedPosts } from "./pages/SavedPosts";
 import { Profile } from "./pages/Profile";
 
 
@@ -89,6 +90,11 @@ export const router = createBrowserRouter([
       {
         path: "community",
         element: <Community />,
+      },
+
+      {
+        path: "saved-posts",
+        element: <SavedPosts />,
       },
 
       {

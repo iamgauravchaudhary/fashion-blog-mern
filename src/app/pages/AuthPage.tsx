@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { API_ENDPOINTS } from "../../config/api";
 
 export function AuthPage() {
 
@@ -28,60 +30,48 @@ export function AuthPage() {
 
     try {
 
+      // =====================
+      // SIGNUP
+      // =====================
       if (activeTab === "signup") {
+        const response = await axios.post(API_ENDPOINTS.SIGNUP, {
+          name: formData.name,
+          age: formData.age,
+          email: formData.email,
+          password: formData.password,
+        });
 
-        const res = await fetch(
-          "http://localhost:5000/auth/signup",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(formData),
-          }
-        );
-
-        const data = await res.json();
-
-        localStorage.setItem("userId", data.userId);
-
-        navigate("/"); // ✅ updated
-
-      } else {
-
-        const res = await fetch(
-          "http://localhost:5000/auth/login",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email: formData.email,
-              password: formData.password,
-            }),
-          }
-        );
-
-        const data = await res.json();
-
-        if (data.userId) {
-
+        const data = response.data;
+        if (data?.token) {
+          localStorage.setItem("token", data.token);
           localStorage.setItem("userId", data.userId);
-
-          navigate("/"); // ✅ updated
-
-        } else {
-
-          alert("Login failed");
-
+          navigate("/");
+          return;
         }
+
+        alert("Signup successful, please login");
+        setActiveTab("login");
+      } else {
+        const response = await axios.post(API_ENDPOINTS.LOGIN, {
+          email: formData.email,
+          password: formData.password,
+        });
+
+        const data = response.data;
+
+        if (data?.token) {
+          localStorage.setItem("token", data.token);
+          localStorage.setItem("userId", data.userId);
+          navigate("/");
+          return;
+        }
+
+        alert("Login failed: missing token");
       }
 
-    } catch {
-
+    } catch (err) {
+      console.error(err);
       alert("Server error");
-
     }
   };
 

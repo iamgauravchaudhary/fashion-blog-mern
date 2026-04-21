@@ -8,6 +8,7 @@ import {
   ShoppingBag,
   Heart,
 } from "lucide-react";
+import { apiCall, API_ENDPOINTS } from "../../config/api";
 
 export function Profile() {
 
@@ -39,13 +40,15 @@ export function Profile() {
 
     const userId =
       localStorage.getItem("userId");
+    const token =
+      localStorage.getItem("token");
 
     console.log(
       "USER ID =",
       userId
     );
 
-    if (!userId) {
+    if (!userId || !token) {
 
       navigate("/auth");
 
@@ -53,11 +56,7 @@ export function Profile() {
 
     }
 
-    fetch(
-      "http://localhost:5000/auth/user/" +
-      userId
-    )
-      .then((res) => res.json())
+    apiCall(API_ENDPOINTS.GET_USER(userId))
       .then((data) => {
 
         console.log(
@@ -65,7 +64,7 @@ export function Profile() {
           data
         );
 
-        if (!data) return;
+        if (!data || data.error) return;
 
         const realUser = {
           name: data.name || "",
@@ -98,13 +97,9 @@ export function Profile() {
   =========================== */
 
   const handleLogout = () => {
-
-    localStorage.removeItem(
-      "userId"
-    );
-
+    localStorage.removeItem("token");
+    localStorage.removeItem("userId");
     navigate("/auth");
-
   };
 
   /* ===========================

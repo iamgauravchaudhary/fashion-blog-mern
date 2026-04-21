@@ -2,172 +2,103 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import jwt from "jsonwebtoken";
+import multer from "multer";
 
 dotenv.config();
 
+// ✅ Dynamic imports for ESM routes
+const authRoutes = (await import("./routes/auth.js")).default;
+const chatRoutes = (await import("./routes/chat.js")).default;
+const wardrobeRoutes = (await import("./routes/wardrobe.js")).default;
+const outfitRoutes = (await import("./routes/outfits.js")).default;
+const communityRoutes = (await import("./routes/community.js")).default;
+const savedOutfitRoutes = (await import("./routes/savedOutfits.js")).default;
+
 const app = express();
+
+// ✅ Middleware
 app.use(cors());
 app.use(express.json({ limit: "50mb" }));
 
-/* =====================
-   MongoDB
-===================== */
+// ✅ Multer setup for file uploads (memory storage - no disk)
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+});
 
+// 🔐 JWT_SECRET - CONSISTENT across app
+export const JWT_SECRET = process.env.JWT_SECRET || "bhidu_secret_key_default";
 
+console.log("🔐 JWT Secret loaded:", JWT_SECRET ? "✅ Yes" : "❌ No");
+
+// 🔑 Check Gemini API Key
+if (!process.env.GEMINI_API_KEY) {
+  console.warn("⚠️  GEMINI_API_KEY not found in .env file!");
+} else {
+  console.log("🔑 Gemini API Key loaded: ✅ Yes");
+}
+
+// ✅ MongoDB CONNECTION
 mongoose.connect(process.env.MONGO_URI, {
   serverSelectionTimeoutMS: 5000,
 })
-  .then(() => console.log("MongoDB connected"))
-  .catch(err => console.log(err));
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch(err => console.log("❌ MongoDB error:", err));
 
-/* =====================
-   USER SCHEMA
-===================== */
-
-const UserSchema = new mongoose.Schema({
-  name: String,
-  age: String,
-  email: String,
-  password: String,
-});
-
-const User = mongoose.model("User", UserSchema);
-
-/* =====================
-   CHAT SCHEMA
-===================== */
-
-const ChatSchema = new mongoose.Schema({
-  userId: String,
-  message: String,
-  reply: String,
-});
-
-const Chat = mongoose.model("Chat", ChatSchema);
-
-/* =====================
-   SIGNUP
-===================== */
-
-app.post("/auth/signup", async (req, res) => {
+// 🔐 AUTH MIDDLEWARE - Token verification
+export const authMiddleware = (req, res, next) => {
   try {
-    const { name, age, email, password } = req.body;
+    const authHeader = req.headers.authorization;
 
-    const user = await User.create({
-      name,
-      age,
-      email,
-      password,
-    });
-
-    res.json({
-      userId: user._id,
-    });
-
-  } catch (err) {
-    res.status(500).json({
-      error: "signup error",
-    });
-  }
-});
-
-/* =====================
-   LOGIN
-===================== */
-
-app.post("/auth/login", async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    const user = await User.findOne({
-      email,
-      password,
-    });
-
-    if (!user) {
-      return res.json({
-        error: "invalid",
-      });
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      console.warn("⚠️  No auth header or invalid format");
+      return res.status(401).json({ error: "No token provided" });
     }
 
-    res.json({
-      userId: user._id,
-    });
+    const token = authHeader.substring(7); // Remove "Bearer " prefix
 
+    if (!token) {
+      console.warn("⚠️  Empty token");
+      return res.status(401).json({ error: "Invalid token format" });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.userId = decoded.userId;
+
+    console.log("✅ Token verified for user:", decoded.userId);
+    next();
   } catch (err) {
-    res.status(500).json({
-      error: "login error",
-    });
+    console.error("🔐 Token verification error:", err.message);
+
+    if (err.name === "TokenExpiredError") {
+      return res.status(401).json({ error: "Token expired" });
+    }
+
+    if (err.name === "JsonWebTokenError") {
+      return res.status(401).json({ error: "Invalid token" });
+    }
+
+    return res.status(401).json({ error: "Authentication failed" });
   }
+};
+
+// ✅ HEALTHCHECK
+app.get("/", (req, res) => {
+  res.json({ status: "ok", message: "StyleVibe backend is running ✅" });
 });
 
-/* =====================
-   GET USER
-===================== */
+// ✅ ROUTE MOUNTING - All routing is handled by these module routers
+app.use("/auth", authRoutes);
+app.use("/api/chat", authMiddleware, chatRoutes);
+app.use("/wardrobe", authMiddleware, wardrobeRoutes);
+app.use("/outfits", authMiddleware, outfitRoutes);
+app.use("/posts", authMiddleware, upload.single("image"), communityRoutes);
+app.use("/saved", authMiddleware, savedOutfitRoutes);
 
-app.get("/auth/user/:id", async (req, res) => {
-  try {
-    const user = await User.findById(
-      req.params.id
-    );
-
-    res.json(user);
-
-  } catch (err) {
-    res.status(500).json({
-      error: "user not found",
-    });
-  }
-});
-
-/* =====================
-   GEMINI
-===================== */
-
-const genAI = new GoogleGenerativeAI(
-  process.env.GEMINI_API_KEY
-);
-
-app.post("/chat", async (req, res) => {
-  try {
-    const { message, userId = "guest" } =
-      req.body;
-
-    const model =
-      genAI.getGenerativeModel({
-        model: "gemini-2.5-flash",
-      });
-
-    const result =
-      await model.generateContent(
-        "You are fashion AI: " + message
-      );
-
-    const reply =
-      result.response.text();
-
-    await Chat.create({
-      userId,
-      message,
-      reply,
-    });
-
-    res.json({ reply });
-
-  } catch (err) {
-    res.status(500).json({
-      reply: "Error",
-    });
-  }
-});
-
-/* =====================
-   SERVER
-===================== */
-
-app.listen(5000, () => {
-  console.log(
-    "Server running http://localhost:5000"
-  );
+// ✅ SERVER STARTUP
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📡 All routes mounted and ready`);
 });
