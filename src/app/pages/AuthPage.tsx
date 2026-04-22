@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { API_ENDPOINTS } from "../../config/api";
+import { apiCall, API_ENDPOINTS } from "../../config/api";
+import { Loader } from "lucide-react";
 
 export function AuthPage() {
 
@@ -9,6 +9,9 @@ export function AuthPage() {
 
   const [activeTab, setActiveTab] =
     useState<"login" | "signup">("login");
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const [formData, setFormData] =
     useState({
@@ -19,6 +22,7 @@ export function AuthPage() {
     });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setError(""); // Clear error on input change
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -27,51 +31,83 @@ export function AuthPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
     try {
+      // Validate inputs
+      if (!formData.email || !formData.password) {
+        setError("Email and password are required");
+        setLoading(false);
+        return;
+      }
 
       // =====================
       // SIGNUP
       // =====================
       if (activeTab === "signup") {
-        const response = await axios.post(API_ENDPOINTS.SIGNUP, {
-          name: formData.name,
-          age: formData.age,
-          email: formData.email,
-          password: formData.password,
-        });
-
-        const data = response.data;
-        if (data?.token) {
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("userId", data.userId);
-          navigate("/");
+        if (!formData.name || !formData.age) {
+          setError("Name and age are required for signup");
+          setLoading(false);
           return;
         }
 
-        alert("Signup successful, please login");
-        setActiveTab("login");
-      } else {
-        const response = await axios.post(API_ENDPOINTS.LOGIN, {
-          email: formData.email,
-          password: formData.password,
-        });
+        try {
+          const data = await apiCall(API_ENDPOINTS.SIGNUP, {
+            method: "POST",
+            data: {
+              name: formData.name,
+              age: formData.age,
+              email: formData.email,
+              password: formData.password,
+            },
+          });
 
-        const data = response.data;
+          if (data?.token) {
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("userId", data.userId);
+            console.log("✅ Signup successful");
+            navigate("/");
+            return;
+          }
 
-        if (data?.token) {
-          localStorage.setItem("token", data.token);
-          localStorage.setItem("userId", data.userId);
-          navigate("/");
-          return;
+          setError(data?.message || "Signup failed");
+        } catch (err: any) {
+          const errorMsg = err?.response?.data?.message || err?.message || "Signup error";
+          setError(`Signup failed: ${errorMsg}`);
+          console.error("Signup error:", err);
         }
-
-        alert("Login failed: missing token");
       }
+      // =====================
+      // LOGIN
+      // =====================
+      else {
+        try {
+          const data = await apiCall(API_ENDPOINTS.LOGIN, {
+            method: "POST",
+            data: {
+              email: formData.email,
+              password: formData.password,
+            },
+          });
 
-    } catch (err) {
-      console.error(err);
-      alert("Server error");
+          if (data?.token) {
+            localStorage.setItem("token", data.token);
+            localStorage.setItem("userId", data.userId);
+            console.log("✅ Login successful");
+            navigate("/");
+            return;
+          }
+
+          setError(data?.message || "Login failed: No token received");
+        } catch (err: any) {
+          const errorMsg = err?.response?.data?.message || err?.message || "Login error";
+          setError(`Login failed: ${errorMsg}`);
+          console.error("Login error:", err);
+        }
+      }
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,9 +130,9 @@ export function AuthPage() {
           <div className="flex gap-2 mb-6 bg-white/10 p-1 rounded-2xl">
             <button
               onClick={() => setActiveTab("login")}
-              className={`flex-1 py-3 rounded-xl ${activeTab === "login"
+              className={`flex-1 py-3 rounded-xl transition-all ${activeTab === "login"
                 ? "bg-white text-purple-600"
-                : "text-white/80"
+                : "text-white/80 hover:text-white"
                 }`}
             >
               Login
@@ -104,14 +140,21 @@ export function AuthPage() {
 
             <button
               onClick={() => setActiveTab("signup")}
-              className={`flex-1 py-3 rounded-xl ${activeTab === "signup"
+              className={`flex-1 py-3 rounded-xl transition-all ${activeTab === "signup"
                 ? "bg-white text-purple-600"
-                : "text-white/80"
+                : "text-white/80 hover:text-white"
                 }`}
             >
               Signup
             </button>
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded-xl text-red-100 text-sm">
+              ⚠️ {error}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
 
@@ -119,28 +162,33 @@ export function AuthPage() {
               <>
                 <input
                   name="name"
-                  placeholder="Name"
+                  placeholder="Full Name"
                   value={formData.name}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-xl bg-white/20 text-white"
+                  disabled={loading}
+                  className="w-full p-3 rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50"
                 />
 
                 <input
                   name="age"
+                  type="number"
                   placeholder="Age"
                   value={formData.age}
                   onChange={handleChange}
-                  className="w-full p-3 rounded-xl bg-white/20 text-white"
+                  disabled={loading}
+                  className="w-full p-3 rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50"
                 />
               </>
             )}
 
             <input
               name="email"
+              type="email"
               placeholder="Email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-3 rounded-xl bg-white/20 text-white"
+              disabled={loading}
+              className="w-full p-3 rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50"
             />
 
             <input
@@ -149,11 +197,23 @@ export function AuthPage() {
               placeholder="Password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-3 rounded-xl bg-white/20 text-white"
+              disabled={loading}
+              className="w-full p-3 rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50"
             />
 
-            <button className="w-full p-3 bg-white text-purple-600 rounded-xl font-bold">
-              {activeTab === "login" ? "Login" : "Signup"}
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full p-3 bg-white text-purple-600 rounded-xl font-bold hover:bg-gray-100 disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
+            >
+              {loading ? (
+                <>
+                  <Loader size={20} className="animate-spin" />
+                  {activeTab === "login" ? "Logging in..." : "Signing up..."}
+                </>
+              ) : (
+                activeTab === "login" ? "Login" : "Signup"
+              )}
             </button>
 
           </form>

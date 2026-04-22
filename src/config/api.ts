@@ -1,6 +1,9 @@
 import axios, { AxiosError } from "axios";
 
-export const API_BASE_URL = "http://localhost:5000";
+// Use deployed backend URL
+export const API_BASE_URL = process.env.REACT_APP_API_URL || "https://fashion-blog-mern-1.onrender.com";
+
+console.log("🌐 API Base URL:", API_BASE_URL);
 
 export const API_ENDPOINTS = {
   // Auth
@@ -49,6 +52,7 @@ const apiClient = axios.create({
   },
 });
 
+// Request interceptor - Add authorization token
 apiClient.interceptors.request.use((config) => {
   // Don't override Content-Type if data is FormData
   if (config.data instanceof FormData) {
@@ -58,14 +62,15 @@ apiClient.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
-    console.log("✅ Token added to request:", token.substring(0, 20) + "...");
-  } else if (!token) {
-    console.warn("⚠️  No token in localStorage for request to:", config.url);
+    console.log("✅ Authorization token added to request");
   }
+
   return config;
 });
 
+// Response interceptor - Handle errors
 const handleUnauthorized = () => {
+  console.warn("⚠️  Unauthorized - Redirecting to auth");
   localStorage.removeItem("token");
   localStorage.removeItem("userId");
   window.location.href = "/auth";
@@ -75,7 +80,12 @@ apiClient.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     if (error.response?.status === 401) {
+      console.error("❌ 401 Unauthorized");
       handleUnauthorized();
+    } else if (error.response?.status === 500) {
+      console.error("❌ 500 Server Error:", error.message);
+    } else if (error.message === "Network Error") {
+      console.error("❌ Network Error - Check if backend is running");
     }
     return Promise.reject(error);
   }
@@ -86,6 +96,7 @@ export const apiCall = async (
   options: { method?: "GET" | "POST" | "PUT" | "DELETE" | string; data?: any; params?: any; headers?: any } = {}
 ) => {
   try {
+    console.log(`📡 ${options.method || "GET"} ${url}`);
     const response = await apiClient({
       url,
       method: options.method || "GET",
@@ -93,6 +104,7 @@ export const apiCall = async (
       params: options.params,
       headers: options.headers,
     });
+    console.log("✅ API Response:", response.status);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

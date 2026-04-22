@@ -212,7 +212,7 @@ Return ONLY the JSON array, no markdown, no extra text.`;
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-        "HTTP-Referer": "http://localhost:5000",
+        "HTTP-Referer": "https://fashion-blog-mern-1.onrender.com",
         "X-Title": "StyleVibe Fashion Assistant",
         "Content-Type": "application/json",
       },
@@ -572,7 +572,7 @@ Return as JSON array like this:
         method: "POST",
         headers: {
           Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
-          "HTTP-Referer": "http://localhost:5000",
+          "HTTP-Referer": "https://fashion-blog-mern-1.onrender.com",
           "X-Title": "StyleVibe Fashion Assistant",
           "Content-Type": "application/json",
         },

@@ -100,7 +100,7 @@ Generates 4 outfit suggestions with HuggingFace-compatible image prompts and gen
 
 **Example cURL:**
 ```bash
-curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/suggestions/huggingface \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -145,7 +145,7 @@ Validates and optimizes an image prompt for HuggingFace FLUX.1-dev.
 
 **Example cURL:**
 ```bash
-curl -X POST http://localhost:5000/api/outfits/validate/prompt \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/validate/prompt \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "A stylish person wearing white t-shirt and blue jeans"
@@ -324,7 +324,7 @@ const image = await generateImage(prompt, options);
 ### Example 1: Generate Casual Outfits for Hot Weather
 
 ```bash
-curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/suggestions/huggingface \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -337,7 +337,7 @@ curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
 ### Example 2: Generate Work Outfits
 
 ```bash
-curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/suggestions/huggingface \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -350,7 +350,7 @@ curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
 ### Example 3: Validate Custom Prompt
 
 ```bash
-curl -X POST http://localhost:5000/api/outfits/validate/prompt \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/validate/prompt \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "A stylish woman wearing elegant black dress, black heels, gold necklace, full body, fashion photography"

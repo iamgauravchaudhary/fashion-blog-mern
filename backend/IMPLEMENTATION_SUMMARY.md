@@ -180,7 +180,7 @@ Response: {
 
 ### Quick Start - Generate 4 Casual Outfits
 ```bash
-curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/suggestions/huggingface \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -307,13 +307,13 @@ Run these tests to verify everything works:
 
 ```bash
 # Test 1: Generate casual outfits
-curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/suggestions/huggingface \
   -H "Authorization: Bearer TEST_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"occasion":"Casual","weather":"Hot"}'
 
 # Test 2: Validate prompt
-curl -X POST http://localhost:5000/api/outfits/validate/prompt \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/validate/prompt \
   -H "Content-Type: application/json" \
   -d '{"prompt":"A stylish person wearing white shirt and jeans"}'
 

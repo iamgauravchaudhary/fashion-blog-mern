@@ -31,7 +31,7 @@ node server.js
 ### Step 4: Test It! 🚀
 
 ```bash
-curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/suggestions/huggingface \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{

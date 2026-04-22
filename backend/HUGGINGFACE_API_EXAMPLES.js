@@ -12,7 +12,7 @@
 // ============================================
 
 // Request URL:
-// POST http://localhost:5000/api/outfits/suggestions/huggingface
+// POST https://fashion-blog-mern-1.onrender.com/api/outfits/suggestions/huggingface
 
 // Request Headers:
 // Authorization: Bearer YOUR_JWT_TOKEN
@@ -61,7 +61,7 @@
 // ============================================
 
 // Request URL:
-// POST http://localhost:5000/api/outfits/validate/prompt
+// POST https://fashion-blog-mern-1.onrender.com/api/outfits/validate/prompt
 
 // Request Headers:
 // Content-Type: application/json
@@ -94,7 +94,7 @@
 // ============================================
 
 // Request URL:
-// POST http://localhost:5000/api/outfits/generate
+// POST https://fashion-blog-mern-1.onrender.com/api/outfits/generate
 
 // Request Headers:
 // Authorization: Bearer YOUR_JWT_TOKEN
@@ -113,7 +113,7 @@
 
 // Example 1: Generate Casual Outfits for Hot Weather
 /*
-curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/suggestions/huggingface \
   -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." \
   -H "Content-Type: application/json" \
   -d '{
@@ -125,7 +125,7 @@ curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
 
 // Example 2: Generate Work Outfits
 /*
-curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/suggestions/huggingface \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -137,7 +137,7 @@ curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
 
 // Example 3: Generate Evening Outfits
 /*
-curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/suggestions/huggingface \
   -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{
@@ -149,7 +149,7 @@ curl -X POST http://localhost:5000/api/outfits/suggestions/huggingface \
 
 // Example 4: Validate a Custom Prompt
 /*
-curl -X POST http://localhost:5000/api/outfits/validate/prompt \
+curl -X POST https://fashion-blog-mern-1.onrender.com/api/outfits/validate/prompt \
   -H "Content-Type: application/json" \
   -d '{
     "prompt": "A stylish woman wearing elegant black dress, black heels, gold accessories, full body, high fashion photography"
@@ -249,10 +249,9 @@ async function validatePrompt(prompt) {
           "raw": "{\n  \"occasion\": \"Casual\",\n  \"weather\": \"Hot\",\n  \"count\": 4\n}"
         },
         "url": {
-          "raw": "http://localhost:5000/api/outfits/suggestions/huggingface",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5000",
+          "raw": "https://fashion-blog-mern-1.onrender.com/api/outfits/suggestions/huggingface",
+          "protocol": "https",
+          "host": ["fashion-blog-mern-1", "onrender", "com"],
           "path": ["api", "outfits", "suggestions", "huggingface"]
         }
       }
@@ -273,11 +272,11 @@ async function validatePrompt(prompt) {
           "raw": "{\n  \"prompt\": \"A stylish person wearing white t-shirt, blue jeans, full body shot, realistic fashion photography, clean background, professional lighting\"\n}"
         },
         "url": {
-          "raw": "http://localhost:5000/api/outfits/validate/prompt",
-          "protocol": "http",
-          "host": ["localhost"],
-          "port": "5000",
+          "raw": "https://fashion-blog-mern-1.onrender.com/api/outfits/validate/prompt",
+          "protocol": "https",
+          "host": ["fashion-blog-mern-1", "onrender", "com"],
           "path": ["api", "outfits", "validate", "prompt"]
+        }
         }
       }
     }
