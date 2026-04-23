@@ -148,41 +148,42 @@ export function MyWardrobe() {
   });
 
   return (
-    <div className="p-8 bg-gradient-to-b from-purple-50 to-white min-h-screen">
+    <div className="px-3 sm:p-8 py-4 bg-gradient-to-b from-purple-50 to-white min-h-screen">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
-            👗 My Wardrobe
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 sm:mb-8">
+        <div className="flex-1">
+          <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-1 sm:mb-2">
+            👗 Wardrobe
           </h1>
-          <p className="text-gray-600">Store and manage your clothing collection</p>
+          <p className="text-xs sm:text-sm text-gray-600">Manage your collection</p>
         </div>
         <button
           onClick={() => setShowForm(true)}
           disabled={addingItem}
-          className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white rounded-lg font-medium hover:shadow-lg transition-all flex items-center gap-2 disabled:opacity-50"
+          className="w-full sm:w-auto px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-r from-purple-600 to-pink-500 text-white text-sm sm:text-base rounded-lg font-medium hover:shadow-lg transition-all flex items-center justify-center sm:justify-start gap-2 disabled:opacity-50 min-h-[40px]"
         >
           {addingItem ? (
-            <Loader className="w-5 h-5 animate-spin" />
+            <Loader className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
           ) : (
-            <Plus className="w-5 h-5" />
+            <Plus className="w-4 h-4 sm:w-5 sm:h-5" />
           )}
-          Add Item
+          <span className="hidden sm:inline">Add Item</span>
+          <span className="sm:hidden">Add</span>
         </button>
       </div>
 
       {/* Add Item Form Modal */}
       {showForm && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-2xl p-8 max-w-md w-full shadow-2xl">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Add New Item</h2>
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 p-3 sm:p-4">
+          <div className="bg-white rounded-lg sm:rounded-2xl p-4 sm:p-8 max-w-md w-full shadow-2xl max-h-[90vh] overflow-y-auto">
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-900 mb-4 sm:mb-6">Add New Item</h2>
 
             {/* Image Upload */}
-            <div className="mb-6">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="mb-4 sm:mb-6">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                 Upload Image *
               </label>
-              <div className="border-2 border-dashed border-purple-300 rounded-lg p-6 text-center cursor-pointer hover:bg-purple-50 transition">
+              <div className="border-2 border-dashed border-purple-300 rounded-lg p-4 sm:p-6 text-center cursor-pointer hover:bg-purple-50 transition">
                 <input
                   type="file"
                   accept="image/*"
@@ -190,13 +191,13 @@ export function MyWardrobe() {
                   className="hidden"
                   id="imageInput"
                 />
-                <label htmlFor="imageInput" className="cursor-pointer">
+                <label htmlFor="imageInput" className="cursor-pointer block">
                   {formData.image ? (
-                    <img src={formData.image} alt="Preview" className="w-32 h-32 object-cover mx-auto rounded-lg" />
+                    <img src={formData.image} alt="Preview" className="w-24 h-24 sm:w-32 sm:h-32 object-cover mx-auto rounded-lg" />
                   ) : (
                     <div className="text-gray-500">
-                      <Plus size={32} className="mx-auto mb-2" />
-                      Click to upload image
+                      <Plus size={24} className="sm:w-8 sm:h-8 mx-auto mb-2" />
+                      <p className="text-xs sm:text-sm">Click to upload</p>
                     </div>
                   )}
                 </label>
@@ -204,8 +205,8 @@ export function MyWardrobe() {
             </div>
 
             {/* Item Name */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="mb-3 sm:mb-4">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Item Name *
               </label>
               <input
@@ -213,19 +214,19 @@ export function MyWardrobe() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="e.g., Blue T-Shirt"
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               />
             </div>
 
             {/* Category */}
-            <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+            <div className="mb-3 sm:mb-4">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Category *
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+                className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 {categories.filter(c => c !== "All").map(cat => (
                   <option key={cat} value={cat}>{cat}</option>

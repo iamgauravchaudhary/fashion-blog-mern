@@ -130,6 +130,8 @@ export function AIStylistChat() {
       setFiles([]);
       setImagePreview([]);
       setInputMessage("");
+      // Clear from localStorage
+      localStorage.removeItem(CHAT_STORAGE_KEY);
     }
   };
 
@@ -208,43 +210,43 @@ export function AIStylistChat() {
 
   return (
     <div className="h-screen flex flex-col bg-gradient-to-b from-purple-50 to-white">
-      <div className="bg-white border-b border-purple-200 px-6 py-4 flex items-center justify-between sticky top-0 shadow-sm z-20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
-            <Sparkles size={20} className="text-white" />
+      <div className="bg-white border-b border-purple-200 px-3 sm:px-6 py-2 sm:py-4 flex items-center justify-between sticky top-0 shadow-sm z-20 gap-2">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center flex-shrink-0">
+            <Sparkles size={16} className="sm:w-5 sm:h-5 text-white" />
           </div>
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">AI Stylist</h1>
-            <p className="text-sm text-gray-500">Ask fashion questions, upload looks, and get styled.</p>
+          <div className="min-w-0">
+            <h1 className="text-lg sm:text-2xl font-bold text-gray-900">AI Stylist</h1>
+            <p className="text-xs sm:text-sm text-gray-500 truncate">Ask fashion questions</p>
           </div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-1">
           <button
             onClick={clearChat}
             title="Clear chat"
-            className="p-2 hover:bg-gray-100 rounded-lg transition text-gray-600 hover:text-red-600"
+            className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition text-gray-600 hover:text-red-600 min-h-[36px] min-w-[36px] flex items-center justify-center"
           >
-            <Trash2 size={20} />
+            <Trash2 size={16} className="sm:w-5 sm:h-5" />
           </button>
           <button
             onClick={resetChat}
             title="Reset chat"
-            className="p-2 hover:bg-gray-100 rounded-lg transition text-gray-600 hover:text-blue-600"
+            className="p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition text-gray-600 hover:text-blue-600 min-h-[36px] min-w-[36px] flex items-center justify-center"
           >
-            <RefreshCw size={20} />
+            <RefreshCw size={16} className="sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-6 space-y-4 scroll-smooth">
+      <div className="flex-1 overflow-y-auto px-3 sm:px-6 py-3 sm:py-4 space-y-3 sm:space-y-4 scroll-smooth">
         {messages.length === 0 && (
-          <div className="h-full flex flex-col items-center justify-center text-center py-12">
-            <div className="w-16 h-16 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full flex items-center justify-center mb-4">
-              <Sparkles size={32} className="text-purple-600" />
+          <div className="h-full flex flex-col items-center justify-center text-center py-6 sm:py-12">
+            <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-200 to-pink-200 rounded-full flex items-center justify-center mb-2 sm:mb-4">
+              <Sparkles size={24} className="sm:w-8 sm:h-8 text-purple-600" />
             </div>
-            <h2 className="text-2xl font-bold text-gray-800 mb-2">Welcome to AI Stylist</h2>
-            <p className="text-gray-500 max-w-md">
-              Ask for outfit ideas, styling advice, or share images to get personalized fashion feedback.
+            <h2 className="text-lg sm:text-2xl font-bold text-gray-800 mb-1 sm:mb-2">Welcome to AI Stylist</h2>
+            <p className="text-xs sm:text-sm text-gray-500 max-w-md px-2">
+              Ask for outfit ideas, styling advice, or share images for feedback.
             </p>
           </div>
         )}
@@ -252,28 +254,28 @@ export function AIStylistChat() {
         {messages.map((m) => (
           <div key={m.id} className={`flex ${m.sender === "user" ? "justify-end" : "justify-start"} animate-fadeIn`}>
             {m.sender === "ai" && (
-              <div className="w-8 h-8 bg-purple-500 rounded-full flex items-center justify-center mr-3 flex-shrink-0 mt-1">
-                <Sparkles size={16} className="text-white" />
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-purple-500 rounded-full flex items-center justify-center mr-1 sm:mr-3 flex-shrink-0 mt-1">
+                <Sparkles size={12} className="sm:w-4 sm:h-4 text-white" />
               </div>
             )}
-            <div className={`max-w-[70%] px-4 py-3 rounded-xl shadow-sm transition-all ${m.sender === "user"
-                ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-br-none"
-                : "bg-white border border-gray-200 text-gray-800 rounded-bl-none"
+            <div className={`max-w-[80%] sm:max-w-[70%] px-3 sm:px-4 py-2 sm:py-3 text-xs sm:text-sm rounded-lg sm:rounded-xl shadow-sm transition-all ${m.sender === "user"
+              ? "bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-br-none"
+              : "bg-white border border-gray-200 text-gray-800 rounded-bl-none"
               }`}>
               {m.images?.length ? (
-                <div className="mb-3 flex flex-wrap gap-2">
+                <div className="mb-2 sm:mb-3 flex flex-wrap gap-1">
                   {m.images.map((src, idx) => (
-                    <img key={idx} src={src} alt="attachment" className="h-20 w-20 rounded object-cover" />
+                    <img key={idx} src={src} alt="attachment" className="h-16 sm:h-20 w-16 sm:w-20 rounded object-cover" />
                   ))}
                 </div>
               ) : null}
-              <div className="whitespace-pre-wrap text-sm break-words">{m.text}</div>
-              <div className={`text-xs mt-2 ${m.sender === "user" ? "text-purple-100" : "text-gray-500"}`}>
+              <div className="whitespace-pre-wrap break-words">{m.text}</div>
+              <div className={`text-xs mt-1 sm:mt-2 ${m.sender === "user" ? "text-purple-100" : "text-gray-500"}`}>
                 {m.timestamp}
               </div>
             </div>
             {m.sender === "user" && (
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center ml-3 flex-shrink-0 mt-1">
+              <div className="w-6 h-6 sm:w-8 sm:h-8 bg-blue-500 rounded-full flex items-center justify-center ml-1 sm:ml-3 flex-shrink-0 mt-1">
                 <span className="text-white text-xs font-bold">U</span>
               </div>
             )}
@@ -298,7 +300,7 @@ export function AIStylistChat() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="bg-white border-t border-purple-200 p-4 shadow-lg">
+      <div className="bg-white border-t border-purple-200 p-2 sm:p-4 shadow-lg">
         <input
           ref={fileInputRef}
           type="file"
@@ -309,13 +311,13 @@ export function AIStylistChat() {
         />
 
         {imagePreview.length > 0 && (
-          <div className="mb-3 flex gap-2 flex-wrap">
+          <div className="mb-2 sm:mb-3 flex gap-1 sm:gap-2 flex-wrap">
             {imagePreview.map((img, i) => (
               <div key={i} className="relative">
-                <img src={img} alt="preview" className="h-16 w-16 rounded border-2 border-purple-300 object-cover" />
+                <img src={img} alt="preview" className="h-12 w-12 sm:h-16 sm:w-16 rounded border-2 border-purple-300 object-cover" />
                 <button
                   onClick={() => removeImage(i)}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600"
+                  className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-4 h-4 sm:w-5 sm:h-5 flex items-center justify-center text-xs hover:bg-red-600 flex-shrink-0"
                 >
                   ✕
                 </button>
@@ -324,56 +326,54 @@ export function AIStylistChat() {
           </div>
         )}
 
-        <div className="grid gap-3 md:grid-cols-[1fr_auto]">
-          <div className="grid gap-2">
-            <div className="flex flex-wrap gap-2">
-              {quickPrompts.map((prompt) => (
-                <button
-                  type="button"
-                  key={prompt}
-                  onClick={() => setInputMessage(prompt)}
-                  className="px-3 py-2 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-purple-50 transition"
-                >
-                  {prompt}
-                </button>
-              ))}
-            </div>
-
-            <div className="flex gap-3">
+        <div className="grid gap-2 sm:gap-3">
+          <div className="flex flex-wrap gap-1 sm:gap-2 max-h-12 overflow-y-auto">
+            {quickPrompts.map((prompt) => (
               <button
-                onClick={openFilePicker}
-                title="Add images"
-                className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-md transition flex items-center justify-center"
+                type="button"
+                key={prompt}
+                onClick={() => setInputMessage(prompt)}
+                className="px-2 sm:px-3 py-1 sm:py-2 bg-gray-100 text-gray-700 rounded-full text-xs sm:text-sm hover:bg-purple-50 transition whitespace-nowrap flex-shrink-0"
               >
-                <ImageIcon size={20} />
+                {prompt.length > 20 ? prompt.substring(0, 17) + "..." : prompt}
               </button>
-
-              <textarea
-                value={inputMessage}
-                onChange={(e) => setInputMessage(e.target.value)}
-                onKeyDown={handleSendMessage}
-                placeholder="Ask me anything about fashion..."
-                rows={1}
-                className="flex-1 min-h-[46px] resize-none border-2 border-gray-200 px-4 py-3 rounded-lg focus:outline-none focus:border-purple-500 transition"
-              />
-
-              <button
-                onClick={() => handleSendMessage()}
-                disabled={loading || (!inputMessage.trim() && !files.length)}
-                className="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
-              >
-                <Send size={20} />
-              </button>
-            </div>
+            ))}
           </div>
 
-          <div className="rounded-3xl border border-purple-100 bg-purple-50 p-4 text-sm text-gray-600">
-            <h3 className="font-semibold text-purple-700 mb-2">Chat Tips</h3>
-            <p>Use quick prompts or upload outfit photos for more tailored styling suggestions.</p>
+          <div className="flex gap-1 sm:gap-3">
+            <button
+              onClick={openFilePicker}
+              title="Add images"
+              className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-md transition flex items-center justify-center flex-shrink-0 min-h-[40px]"
+            >
+              <ImageIcon size={16} className="sm:w-5 sm:h-5" />
+            </button>
+
+            <textarea
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyDown={handleSendMessage}
+              placeholder="Ask..."
+              rows={1}
+              className="flex-1 min-h-[40px] sm:min-h-[46px] resize-none border-2 border-gray-200 px-2 sm:px-4 py-1.5 sm:py-3 text-xs sm:text-sm rounded-lg focus:outline-none focus:border-purple-500 transition"
+            />
+
+            <button
+              onClick={() => handleSendMessage()}
+              disabled={loading || (!inputMessage.trim() && !files.length)}
+              className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0 min-h-[40px]"
+            >
+              <Send size={16} className="sm:w-5 sm:h-5" />
+            </button>
+          </div>
+
+          <div className="hidden sm:block rounded-2xl sm:rounded-3xl border border-purple-100 bg-purple-50 p-3 sm:p-4 text-xs sm:text-sm text-gray-600">
+            <h3 className="font-semibold text-purple-700 mb-1 sm:mb-2 text-xs sm:text-sm">Chat Tips</h3>
+            <p className="text-xs">Upload photos for tailored suggestions.</p>
           </div>
         </div>
 
-        <div className="text-xs text-gray-500 mt-2">Press Enter to send, Shift+Enter for newline.</div>
+        <div className="text-xs text-gray-500 mt-1 sm:mt-2">Enter to send</div>
       </div>
     </div>
   );

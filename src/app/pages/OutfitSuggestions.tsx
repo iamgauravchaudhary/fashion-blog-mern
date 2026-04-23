@@ -197,37 +197,39 @@ export function OutfitSuggestions() {
       : outfits.filter(o => o.category === selectedCategory);
 
   return (
-    <div className="p-8 bg-gradient-to-b from-purple-50 to-white min-h-screen">
+    <div className="px-3 sm:p-8 py-4 bg-gradient-to-b from-purple-50 to-white min-h-screen">
       {/* Header */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
+      <div className="mb-6 sm:mb-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4">
           <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-2">
-              ✨ Outfit Suggestions
+            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent mb-1 sm:mb-2">
+              ✨ Outfits
             </h1>
-            <p className="text-gray-600">
-              AI-powered personalized outfit recommendations
+            <p className="text-xs sm:text-sm text-gray-600">
+              AI-powered recommendations
             </p>
           </div>
         </div>
       </div>
 
       {/* Generate Button */}
-      <div className="mb-8 flex gap-3 flex-wrap">
+      <div className="mb-4 sm:mb-8 flex flex-col sm:flex-row gap-2 sm:gap-3">
         <button
           onClick={generateOutfitsSuggestions}
           disabled={generatingOutfits}
-          className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg hover:shadow-lg transition disabled:opacity-50 flex items-center gap-2 font-medium"
+          className="flex-1 sm:flex-none bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg hover:shadow-lg transition disabled:opacity-50 flex items-center justify-center sm:justify-start gap-2 font-medium min-h-[44px]"
         >
           {generatingOutfits ? (
             <>
-              <Loader size={20} className="animate-spin" />
-              Generating...
+              <Loader size={18} className="animate-spin sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Generating...</span>
+              <span className="sm:hidden">Gen...</span>
             </>
           ) : (
             <>
-              <Sparkles size={20} />
-              Generate New Outfits
+              <Sparkles size={18} className="sm:w-5 sm:h-5" />
+              <span className="hidden sm:inline">Generate New Outfits</span>
+              <span className="sm:hidden">Generate</span>
             </>
           )}
         </button>
@@ -235,22 +237,23 @@ export function OutfitSuggestions() {
         <button
           onClick={clearAllOutfits}
           disabled={outfits.length === 0}
-          className="bg-red-500 hover:bg-red-600 text-white px-6 py-3 rounded-lg hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-medium"
+          className="flex-1 sm:flex-none bg-red-500 hover:bg-red-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center sm:justify-start gap-2 font-medium min-h-[44px]"
           title="Delete all outfit cards"
         >
-          <Trash2 size={20} />
-          Clear All Data
+          <Trash2 size={18} className="sm:w-5 sm:h-5" />
+          <span className="hidden sm:inline">Clear All</span>
+          <span className="sm:hidden">Clear</span>
         </button>
       </div>
 
       {/* Category Filter */}
-      <div className="mb-8">
-        <div className="flex gap-2 overflow-x-auto pb-2">
+      <div className="mb-6 sm:mb-8">
+        <div className="flex gap-2 overflow-x-auto pb-2 -mx-3 sm:mx-0 px-3 sm:px-0">
           {categories.map(category => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
-              className={`px-4 py-2 rounded-full whitespace-nowrap font-medium transition-all ${selectedCategory === category
+              className={`px-3 sm:px-4 py-1.5 sm:py-2 text-xs sm:text-sm rounded-full whitespace-nowrap font-medium transition-all min-h-[36px] sm:min-h-[40px] ${selectedCategory === category
                 ? "bg-gradient-to-r from-purple-600 to-pink-500 text-white shadow-lg"
                 : "bg-white border border-gray-200 text-gray-700 hover:bg-gray-50"
                 }`}
@@ -271,12 +274,12 @@ export function OutfitSuggestions() {
       {/* Empty State */}
       {!loading && filteredOutfits.length === 0 && (
         <div className="text-center py-12">
-          <Sparkles size={48} className="mx-auto text-gray-300 mb-4" />
-          <p className="text-gray-600 text-lg">No outfits yet</p>
-          <p className="text-gray-500 mb-6">Generate personalized suggestions using AI</p>
+          <Sparkles size={40} className="mx-auto text-gray-300 mb-3 sm:mb-4 sm:w-12 sm:h-12" />
+          <p className="text-gray-600 text-base sm:text-lg">No outfits yet</p>
+          <p className="text-gray-500 text-sm mb-6">Generate personalized suggestions using AI</p>
           <button
             onClick={generateOutfitsSuggestions}
-            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg hover:shadow-lg transition font-medium"
+            className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg hover:shadow-lg transition font-medium min-h-[44px]"
           >
             Generate Outfits
           </button>
@@ -285,11 +288,11 @@ export function OutfitSuggestions() {
 
       {/* Outfit Grid */}
       {!loading && filteredOutfits.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {filteredOutfits.map(outfit => (
             <div
               key={outfit._id}
-              className="group bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300"
+              className="group bg-white rounded-xl sm:rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300"
             >
               {/* Image */}
               <div className="relative aspect-square overflow-hidden bg-gray-100">
@@ -304,10 +307,10 @@ export function OutfitSuggestions() {
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
 
                 {/* Action Buttons */}
-                <div className="absolute top-3 right-3 flex gap-2">
+                <div className="absolute top-2 sm:top-3 right-2 sm:right-3 flex gap-1.5 sm:gap-2">
                   <button
                     onClick={() => handleLike(outfit)}
-                    className={`w-10 h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition-all ${outfit.liked
+                    className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center backdrop-blur-sm transition-all min-h-[44px] min-w-[44px] sm:min-h-auto sm:min-w-auto ${outfit.liked
                       ? "bg-red-500 text-white"
                       : "bg-white/80 text-gray-700 hover:bg-white"
                       }`}
@@ -320,7 +323,7 @@ export function OutfitSuggestions() {
 
                   <button
                     onClick={() => deleteOutfit(outfit._id || "")}
-                    className="w-10 h-10 rounded-full flex items-center justify-center bg-white/80 text-red-600 hover:bg-red-50 transition-all"
+                    className="w-9 h-9 sm:w-10 sm:h-10 rounded-full flex items-center justify-center bg-white/80 text-red-600 hover:bg-red-50 transition-all min-h-[44px] min-w-[44px] sm:min-h-auto sm:min-w-auto"
                     title="Delete outfit"
                   >
                     <Trash2 className="w-5 h-5" />
@@ -329,32 +332,32 @@ export function OutfitSuggestions() {
               </div>
 
               {/* Content */}
-              <div className="p-4">
-                <h3 className="text-base font-bold text-gray-900 mb-1 line-clamp-2">
+              <div className="p-3 sm:p-4">
+                <h3 className="text-sm sm:text-base font-bold text-gray-900 mb-1 line-clamp-2">
                   {outfit.title}
                 </h3>
 
-                <p className="text-gray-600 text-xs mb-3 line-clamp-2 h-8">
+                <p className="text-gray-600 text-xs mb-2 sm:mb-3 line-clamp-2 h-7 sm:h-8">
                   {outfit.styleTip}
                 </p>
 
                 {/* Category & Season */}
-                <div className="flex gap-2 mb-3 flex-wrap">
-                  <span className="px-2 py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-medium">
+                <div className="flex gap-2 mb-2 sm:mb-3 flex-wrap">
+                  <span className="px-2 py-0.5 sm:py-1 bg-purple-50 text-purple-700 rounded-full text-xs font-medium">
                     {outfit.category}
                   </span>
-                  <span className="px-2 py-1 bg-pink-50 text-pink-700 rounded-full text-xs font-medium">
+                  <span className="px-2 py-0.5 sm:py-1 bg-pink-50 text-pink-700 rounded-full text-xs font-medium">
                     {outfit.season}
                   </span>
                 </div>
 
                 {/* Colors */}
                 {outfit.colors && outfit.colors.length > 0 && (
-                  <div className="flex gap-1 mb-3">
+                  <div className="flex gap-1 mb-2 sm:mb-3">
                     {outfit.colors.slice(0, 4).map((color, i) => (
                       <div
                         key={i}
-                        className="w-5 h-5 rounded-full border border-gray-300"
+                        className="w-4 h-4 sm:w-5 sm:h-5 rounded-full border border-gray-300"
                         style={{ backgroundColor: color }}
                         title={color}
                       ></div>
@@ -364,12 +367,12 @@ export function OutfitSuggestions() {
 
                 {/* Items */}
                 {outfit.items && (
-                  <div className="text-xs text-gray-600 space-y-1">
-                    <p className="font-semibold text-gray-700">Items:</p>
-                    {outfit.items.top && <p>👕 {outfit.items.top}</p>}
-                    {outfit.items.bottom && <p>👖 {outfit.items.bottom}</p>}
-                    {outfit.items.shoes && <p>👟 {outfit.items.shoes}</p>}
-                    {outfit.items.accessory && <p>✨ {outfit.items.accessory}</p>}
+                  <div className="text-xs text-gray-600 space-y-0.5 sm:space-y-1">
+                    <p className="font-semibold text-gray-700 text-xs">Items:</p>
+                    {outfit.items.top && <p className="truncate">👕 {outfit.items.top}</p>}
+                    {outfit.items.bottom && <p className="truncate">👖 {outfit.items.bottom}</p>}
+                    {outfit.items.shoes && <p className="truncate">👟 {outfit.items.shoes}</p>}
+                    {outfit.items.accessory && <p className="truncate">✨ {outfit.items.accessory}</p>}
                   </div>
                 )}
               </div>

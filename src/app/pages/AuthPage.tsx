@@ -112,25 +112,25 @@ export function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 relative overflow-hidden">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-6 sm:p-4 bg-gradient-to-br from-purple-600 via-pink-500 to-orange-400 relative overflow-hidden">
 
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute w-96 h-96 bg-white/10 rounded-full blur-3xl -top-48 -left-48 animate-pulse"></div>
-        <div className="absolute w-96 h-96 bg-white/10 rounded-full blur-3xl -bottom-48 -right-48 animate-pulse delay-700"></div>
+        <div className="absolute w-64 h-64 sm:w-96 sm:h-96 bg-white/10 rounded-full blur-3xl -top-32 sm:-top-48 -left-32 sm:-left-48 animate-pulse"></div>
+        <div className="absolute w-64 h-64 sm:w-96 sm:h-96 bg-white/10 rounded-full blur-3xl -bottom-32 sm:-bottom-48 -right-32 sm:-right-48 animate-pulse delay-700"></div>
       </div>
 
       <div className="relative w-full max-w-md">
-        <div className="bg-white/10 backdrop-blur-xl rounded-3xl shadow-2xl border border-white/20 p-8">
+        <div className="bg-white/10 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/20 p-6 sm:p-8">
 
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold text-white mb-2">StyleVibe</h1>
-            <p className="text-white/80">Your Fashion Social Hub</p>
+          <div className="text-center mb-6 sm:mb-8">
+            <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2">StyleVibe</h1>
+            <p className="text-sm sm:text-base text-white/80">Your Fashion Social Hub</p>
           </div>
 
-          <div className="flex gap-2 mb-6 bg-white/10 p-1 rounded-2xl">
+          <div className="flex gap-2 mb-6 bg-white/10 p-1 rounded-xl sm:rounded-2xl">
             <button
               onClick={() => setActiveTab("login")}
-              className={`flex-1 py-3 rounded-xl transition-all ${activeTab === "login"
+              className={`flex-1 py-2 sm:py-3 text-sm sm:text-base rounded-lg sm:rounded-xl transition-all ${activeTab === "login"
                 ? "bg-white text-purple-600"
                 : "text-white/80 hover:text-white"
                 }`}
@@ -140,7 +140,7 @@ export function AuthPage() {
 
             <button
               onClick={() => setActiveTab("signup")}
-              className={`flex-1 py-3 rounded-xl transition-all ${activeTab === "signup"
+              className={`flex-1 py-2 sm:py-3 text-sm sm:text-base rounded-lg sm:rounded-xl transition-all ${activeTab === "signup"
                 ? "bg-white text-purple-600"
                 : "text-white/80 hover:text-white"
                 }`}
@@ -151,12 +151,12 @@ export function AuthPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded-xl text-red-100 text-sm">
+            <div className="mb-4 p-3 bg-red-500/20 border border-red-500 rounded-lg sm:rounded-xl text-red-100 text-xs sm:text-sm">
               ⚠️ {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
 
             {activeTab === "signup" && (
               <>
@@ -166,7 +166,7 @@ export function AuthPage() {
                   value={formData.name}
                   onChange={handleChange}
                   disabled={loading}
-                  className="w-full p-3 rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50"
+                  className="w-full p-2.5 sm:p-3 text-sm sm:text-base rounded-lg sm:rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/30"
                 />
 
                 <input
@@ -176,7 +176,7 @@ export function AuthPage() {
                   value={formData.age}
                   onChange={handleChange}
                   disabled={loading}
-                  className="w-full p-3 rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50"
+                  className="w-full p-2.5 sm:p-3 text-sm sm:text-base rounded-lg sm:rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/30"
                 />
               </>
             )}
@@ -188,7 +188,7 @@ export function AuthPage() {
               value={formData.email}
               onChange={handleChange}
               disabled={loading}
-              className="w-full p-3 rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50"
+              className="w-full p-2.5 sm:p-3 text-sm sm:text-base rounded-lg sm:rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/30"
             />
 
             <input
@@ -198,18 +198,19 @@ export function AuthPage() {
               value={formData.password}
               onChange={handleChange}
               disabled={loading}
-              className="w-full p-3 rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50"
+              className="w-full p-2.5 sm:p-3 text-sm sm:text-base rounded-lg sm:rounded-xl bg-white/20 text-white placeholder-white/50 disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-white/30"
             />
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full p-3 bg-white text-purple-600 rounded-xl font-bold hover:bg-gray-100 disabled:opacity-50 flex items-center justify-center gap-2 transition-all"
+              className="w-full p-2.5 sm:p-3 text-sm sm:text-base bg-white text-purple-600 rounded-lg sm:rounded-xl font-bold hover:bg-gray-100 disabled:opacity-50 flex items-center justify-center gap-2 transition-all min-h-[44px]"
             >
               {loading ? (
                 <>
-                  <Loader size={20} className="animate-spin" />
-                  {activeTab === "login" ? "Logging in..." : "Signing up..."}
+                  <Loader size={16} className="animate-spin sm:w-5 sm:h-5" />
+                  <span className="hidden sm:inline">{activeTab === "login" ? "Logging in..." : "Signing up..."}</span>
+                  <span className="sm:hidden">{activeTab === "login" ? "Login..." : "Signup..."}</span>
                 </>
               ) : (
                 activeTab === "login" ? "Login" : "Signup"

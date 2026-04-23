@@ -194,44 +194,54 @@ export function Profile() {
 
   return (
 
-    <div className="p-8">
+    <div className="px-3 sm:px-8 py-4 sm:py-8 bg-gray-50 min-h-screen">
 
       {/* HEADER */}
 
-      <div className="bg-purple-500 p-6 rounded-xl text-white">
+      <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 p-4 sm:p-6 rounded-lg sm:rounded-xl text-white">
 
-        <img
-          src={user.avatar}
-          className="w-24 h-24 rounded-full"
-        />
+        <div className="flex items-start justify-between gap-3">
+          <img
+            src={user.avatar}
+            className="w-16 h-16 sm:w-24 sm:h-24 rounded-full border-2 border-white/30"
+          />
 
-        <h2>
+          <div className="flex gap-1 sm:gap-2">
+            <button
+              onClick={handleChangeAvatar}
+              className="p-1.5 sm:p-2 bg-white/20 hover:bg-white/30 rounded-lg transition min-h-[36px] min-w-[36px]"
+              title="Change avatar"
+            >
+              <Camera size={16} className="sm:w-5 sm:h-5" />
+            </button>
+
+            <button
+              onClick={() =>
+                setIsEditing(
+                  !isEditing
+                )
+              }
+              className="p-1.5 sm:p-2 bg-white/20 hover:bg-white/30 rounded-lg transition min-h-[36px] min-w-[36px]"
+              title="Edit profile"
+            >
+              <Edit size={16} className="sm:w-5 sm:h-5" />
+            </button>
+          </div>
+        </div>
+
+        <h2 className="text-lg sm:text-3xl font-bold mt-2 sm:mt-3 truncate">
           {user.name}
         </h2>
 
-        <button
-          onClick={
-            handleChangeAvatar
-          }
-        >
-          <Camera size={18} />
-        </button>
-
-        <button
-          onClick={() =>
-            setIsEditing(
-              !isEditing
-            )
-          }
-        >
-          <Edit size={18} />
-        </button>
+        <p className="text-xs sm:text-sm text-white/80 truncate">
+          {user.email}
+        </p>
 
       </div>
 
       {/* STATS */}
 
-      <div className="grid grid-cols-3 gap-4 mt-6">
+      <div className="grid grid-cols-3 gap-2 sm:gap-4 mt-4 sm:mt-6">
 
         {stats.map(
           (s, i) => {
@@ -243,16 +253,16 @@ export function Profile() {
 
               <div
                 key={i}
-                className="bg-white p-4 rounded"
+                className="bg-white p-2 sm:p-4 rounded-lg sm:rounded-xl shadow-sm hover:shadow-md transition text-center"
               >
 
-                <Icon />
+                <Icon className="w-5 h-5 sm:w-6 sm:h-6 mx-auto mb-1 sm:mb-2 text-purple-500" />
 
-                <p>
+                <p className="font-bold text-sm sm:text-lg text-gray-900">
                   {s.value}
                 </p>
 
-                <p>
+                <p className="text-xs sm:text-sm text-gray-600">
                   {s.label}
                 </p>
 
@@ -267,61 +277,93 @@ export function Profile() {
 
       {/* DETAILS */}
 
-      <div className="bg-white p-6 mt-6 rounded">
+      <div className="bg-white p-4 sm:p-6 mt-4 sm:mt-6 rounded-lg sm:rounded-xl shadow-sm">
 
         {isEditing ? (
 
           <>
 
-            <input
-              value={
-                editForm.name
-              }
-              onChange={(e) =>
-                setEditForm({
-                  ...editForm,
-                  name:
-                    e.target
-                      .value,
-                })
-              }
-            />
+            <div className="space-y-3 sm:space-y-4">
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input
+                  value={
+                    editForm.name
+                  }
+                  onChange={(e) =>
+                    setEditForm({
+                      ...editForm,
+                      name:
+                        e.target
+                          .value,
+                    })
+                  }
+                  placeholder="Full name"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
 
-            <input
-              value={
-                editForm.age
-              }
-              onChange={(e) =>
-                setEditForm({
-                  ...editForm,
-                  age:
-                    e.target
-                      .value,
-                })
-              }
-            />
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Age</label>
+                <input
+                  value={
+                    editForm.age
+                  }
+                  type="number"
+                  onChange={(e) =>
+                    setEditForm({
+                      ...editForm,
+                      age:
+                        e.target
+                          .value,
+                    })
+                  }
+                  placeholder="Age"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
 
-            <input
-              value={
-                editForm.email
-              }
-              onChange={(e) =>
-                setEditForm({
-                  ...editForm,
-                  email:
-                    e.target
-                      .value,
-                })
-              }
-            />
+              <div>
+                <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  value={
+                    editForm.email
+                  }
+                  onChange={(e) =>
+                    setEditForm({
+                      ...editForm,
+                      email:
+                        e.target
+                          .value,
+                    })
+                  }
+                  placeholder="Email"
+                  className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                />
+              </div>
+            </div>
 
-            <button
-              onClick={
-                handleSaveProfile
-              }
-            >
-              Save
-            </button>
+            <div className="flex gap-2 sm:gap-3 mt-4 sm:mt-6">
+              <button
+                onClick={
+                  handleSaveProfile
+                }
+                className="flex-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg hover:shadow-lg transition font-medium min-h-[40px]"
+              >
+                Save
+              </button>
+
+              <button
+                onClick={() =>
+                  setIsEditing(
+                    false
+                  )
+                }
+                className="flex-1 bg-gray-200 text-gray-700 px-4 py-2 sm:py-2.5 text-xs sm:text-sm rounded-lg hover:bg-gray-300 transition font-medium min-h-[40px]"
+              >
+                Cancel
+              </button>
+            </div>
 
           </>
 
@@ -329,22 +371,30 @@ export function Profile() {
 
           <>
 
-            <p>
-              Age:
-              {user.age}
-            </p>
+            <div className="space-y-3 sm:space-y-4">
+              <div className="pb-3 sm:pb-4 border-b border-gray-200">
+                <p className="text-xs sm:text-sm text-gray-600 font-medium">Age</p>
+                <p className="text-sm sm:text-base text-gray-900 font-semibold">
+                  {user.age || "Not provided"}
+                </p>
+              </div>
 
-            <p>
-              Email:
-              {user.email}
-            </p>
+              <div className="pb-3 sm:pb-4 border-b border-gray-200">
+                <p className="text-xs sm:text-sm text-gray-600 font-medium">Email</p>
+                <p className="text-xs sm:text-sm text-gray-900 font-semibold break-all">
+                  {user.email}
+                </p>
+              </div>
 
-            <p>
-              Joined:
-              {formatDate(
-                user.joinedDate
-              )}
-            </p>
+              <div>
+                <p className="text-xs sm:text-sm text-gray-600 font-medium">Joined</p>
+                <p className="text-xs sm:text-sm text-gray-900 font-semibold">
+                  {formatDate(
+                    user.joinedDate
+                  )}
+                </p>
+              </div>
+            </div>
 
           </>
 
@@ -358,12 +408,13 @@ export function Profile() {
         onClick={
           handleLogout
         }
-        className="mt-6 bg-red-500 text-white p-3 rounded"
+        className="w-full mt-4 sm:mt-6 bg-red-500 hover:bg-red-600 text-white px-4 sm:px-6 py-2.5 sm:py-3 text-sm sm:text-base rounded-lg transition font-medium flex items-center justify-center gap-2 min-h-[44px]"
       >
 
-        <LogOut size={18} />
+        <LogOut size={16} className="sm:w-5 sm:h-5" />
 
-        Logout
+        <span className="hidden sm:inline">Logout</span>
+        <span className="sm:hidden">Logout</span>
 
       </button>
 
