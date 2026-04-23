@@ -212,4 +212,39 @@ router.get("/history", async (req, res) => {
   }
 });
 
+/* =====================
+   DELETE ALL CHAT HISTORY (for user)
+===================== */
+
+router.delete("/", async (req, res) => {
+  try {
+    const userId = req.userId;
+
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        error: "Unauthorized",
+      });
+    }
+
+    console.log("🗑️ Deleting all chats for user:", userId);
+
+    const result = await ChatModel.deleteMany({ userId });
+
+    res.json({
+      success: true,
+      message: "All chats deleted",
+      deletedCount: result.deletedCount,
+    });
+
+  } catch (err) {
+    console.error("❌ DELETE CHAT ERROR:", err.message);
+
+    res.status(500).json({
+      success: false,
+      error: "Failed to delete chats",
+    });
+  }
+});
+
 export default router;

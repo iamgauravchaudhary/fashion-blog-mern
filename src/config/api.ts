@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
   // Chat
   SEND_MESSAGE: `${API_BASE_URL}/api/chat/`,
   GET_CHAT_HISTORY: `${API_BASE_URL}/api/chat/history`,
+  DELETE_CHAT_HISTORY: `${API_BASE_URL}/api/chat/`,
 
   // Wardrobe
   ADD_ITEM: `${API_BASE_URL}/wardrobe/`,

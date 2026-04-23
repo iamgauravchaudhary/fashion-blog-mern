@@ -67,6 +67,28 @@ router.get("/", async (req, res) => {
 });
 
 /* =====================
+   COMMUNITY - GET USER POSTS
+===================== */
+
+router.get("/user/:userId", async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    console.log("📸 Fetching posts for user:", userId);
+
+    const posts = await PostModel.find({ userId })
+      .populate("userId", "name avatar email")
+      .sort({ createdAt: -1 });
+
+    res.json(posts);
+
+  } catch (err) {
+    console.error("❌ USER POSTS ERROR:", err.message);
+    res.status(500).json({ error: "Failed to fetch user posts" });
+  }
+});
+
+/* =====================
    COMMUNITY - LIKE POST
 ===================== */
 

@@ -125,13 +125,31 @@ export function AIStylistChat() {
   };
 
   const clearChat = () => {
-    if (window.confirm("Clear all messages?")) {
-      setMessages([]);
-      setFiles([]);
-      setImagePreview([]);
-      setInputMessage("");
-      // Clear from localStorage
-      localStorage.removeItem(CHAT_STORAGE_KEY);
+    if (window.confirm("Clear all messages? This action will permanently delete all chat history.")) {
+      // First try to delete from backend
+      apiCall(API_ENDPOINTS.DELETE_CHAT_HISTORY, {
+        method: "DELETE",
+      })
+        .then(() => {
+          console.log("✅ Chat history deleted from server");
+          // Then clear from frontend
+          setMessages([]);
+          setFiles([]);
+          setImagePreview([]);
+          setInputMessage("");
+          localStorage.removeItem(CHAT_STORAGE_KEY);
+          alert("✅ All messages deleted permanently");
+        })
+        .catch((err) => {
+          console.error("⚠️ Error deleting from server:", err);
+          // Still clear from frontend if server delete fails
+          setMessages([]);
+          setFiles([]);
+          setImagePreview([]);
+          setInputMessage("");
+          localStorage.removeItem(CHAT_STORAGE_KEY);
+          alert("Messages cleared from your device (server sync failed)");
+        });
     }
   };
 
