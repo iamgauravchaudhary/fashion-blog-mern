@@ -259,14 +259,15 @@ Return ONLY the JSON array, no markdown, no extra text.`;
   }
 }
 
-/* =====================
-   GENERATE OUTFIT SUGGESTIONS (AI-POWERED)
-===================== */
-
 router.post("/generate", async (req, res) => {
   try {
     const userId = req.userId;
     const { count = 4 } = req.body;
+
+    // ✅ VALIDATE USER ID
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - no user ID" });
+    }
 
     // Get user's wardrobe
     const wardrobeItems = await WardrobeModel.find({ userId });

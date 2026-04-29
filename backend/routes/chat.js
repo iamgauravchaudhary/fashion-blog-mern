@@ -92,7 +92,11 @@ router.post("/", async (req, res) => {
         }
       );
 
-      reply = response.data?.choices?.[0]?.message?.content?.trim() || "";
+      if (!response.data || !response.data.choices || !response.data.choices[0]) {
+        throw new Error("Invalid OpenRouter response structure");
+      }
+
+      reply = response.data.choices[0].message?.content?.trim() || "";
 
       if (!reply) {
         throw new Error("OpenRouter returned empty content");
@@ -134,13 +138,18 @@ router.post("/", async (req, res) => {
        SAVE CHAT TO DATABASE
     ====================== */
 
-    const chatRecord = await ChatModel.create({
-      userId,
-      message,
-      reply,
-    });
-
-    console.log("💾 Chat saved:", chatRecord._id);
+    let chatRecord;
+    try {
+      chatRecord = await ChatModel.create({
+        userId,
+        message,
+        reply,
+      });
+      console.log("💾 Chat saved:", chatRecord._id);
+    } catch (dbError) {
+      console.error("⚠️ Database save error:", dbError.message);
+      chatRecord = { _id: null };
+    }
 
     /* =====================
        RESPONSE
@@ -207,7 +216,7 @@ router.get("/history", async (req, res) => {
 
     res.status(500).json({
       success: false,
-      error: "Failed to fetch history",
+      reply: "Failed to fetch history",
     });
   }
 });
@@ -216,7 +225,7 @@ router.get("/history", async (req, res) => {
    DELETE ALL CHAT HISTORY (for user)
 ===================== */
 
-router.delete("/", async (req, res) => {
+router.delete("/all", async (req, res) => {
   try {
     const userId = req.userId;
 
@@ -242,7 +251,7 @@ router.delete("/", async (req, res) => {
 
     res.status(500).json({
       success: false,
-      error: "Failed to delete chats",
+      reply: "Failed to delete chats",
     });
   }
 });

@@ -12,12 +12,32 @@ router.post("/", async (req, res) => {
     const { caption } = req.body;
     const userId = req.userId;
 
+    // ✅ VALIDATE USER ID
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - no user ID" });
+    }
+
     console.log("📥 Incoming file:", req.file ? `${req.file.mimetype} (${req.file.size} bytes)` : "No file");
 
-    // ✅ Handle image from multer file upload
+    // ✅ VALIDATE FILE
     if (!req.file) {
       return res.status(400).json({
         error: "Image is required",
+      });
+    }
+
+    // ✅ CHECK FILE TYPE
+    const allowedMimes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+    if (!allowedMimes.includes(req.file.mimetype)) {
+      return res.status(400).json({
+        error: "Invalid file type. Only JPEG, PNG, GIF, and WebP are allowed",
+      });
+    }
+
+    // ✅ CHECK FILE SIZE (limit to 5MB)
+    if (req.file.size > 5 * 1024 * 1024) {
+      return res.status(400).json({
+        error: "File size too large. Maximum 5MB allowed",
       });
     }
 
@@ -97,7 +117,16 @@ router.post("/:id/like", async (req, res) => {
     const userId = req.userId;
     const postId = req.params.id;
 
+    // ✅ VALIDATE USER ID
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - no user ID" });
+    }
+
     const post = await PostModel.findById(postId);
+
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
 
     if (post.likes.includes(userId)) {
       post.likes = post.likes.filter(id => id.toString() !== userId.toString());
@@ -124,6 +153,11 @@ router.post("/:id/save", async (req, res) => {
   try {
     const userId = req.userId;
     const postId = req.params.id;
+
+    // ✅ VALIDATE USER ID
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - no user ID" });
+    }
 
     const post = await PostModel.findById(postId);
 
@@ -179,13 +213,29 @@ router.post("/:id/comment", async (req, res) => {
     const postId = req.params.id;
     const { text } = req.body;
 
+    // ✅ Validate comment text
+    if (!text || text.trim() === "") {
+      return res.status(400).json({ error: "Comment cannot be empty" });
+    }
+
+    if (text.length > 500) {
+      return res.status(400).json({ error: "Comment too long (max 500 characters)" });
+    }
+
     const user = await UserModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
     const post = await PostModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
 
     post.comments.push({
       userId,
       username: user.name,
-      text,
+      text: text.trim(),
     });
 
     await post.save();
@@ -200,17 +250,64 @@ router.post("/:id/comment", async (req, res) => {
 });
 
 /* =====================
+   COMMUNITY - DELETE COMMENT
+===================== */
+router.delete("/:postId/comment/:commentId", async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { postId, commentId } = req.params;
+
+    // ✅ VALIDATE USER ID
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - no user ID" });
+    }
+
+    const post = await PostModel.findById(postId);
+    if (!post) {
+      return res.status(404).json({ error: "Post not found" });
+    }
+
+    const comment = post.comments.find(c => c._id.toString() === commentId);
+    if (!comment) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
+
+    // ✅ VERIFY OWNERSHIP - allow post owner or comment author to delete
+    if (comment.userId.toString() !== userId.toString() && post.userId.toString() !== userId.toString()) {
+      return res.status(403).json({ error: "Not authorized to delete this comment" });
+    }
+
+    post.comments = post.comments.filter(c => c._id.toString() !== commentId);
+    await post.save();
+    await post.populate("userId", "name avatar");
+
+    res.json(post);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to delete comment" });
+  }
+});
+
+/* =====================
    COMMUNITY - DELETE POST
 ===================== */
 router.delete("/:id", async (req, res) => {
   try {
+    const userId = req.userId;
+
+    // ✅ VALIDATE USER ID
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - no user ID" });
+    }
+
     const post = await PostModel.findById(req.params.id);
 
     if (!post) {
       return res.status(404).json({ error: "Post not found" });
     }
 
-    if (post.userId.toString() !== req.userId) {
+    if (post.userId.toString() !== userId.toString()) {
       return res.status(403).json({ error: "Not authorized" });
     }
 

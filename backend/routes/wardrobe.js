@@ -12,6 +12,11 @@ router.post("/", async (req, res) => {
     const { name, category, color, season, image } = req.body;
     const userId = req.userId;
 
+    // ✅ VALIDATE USER ID
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - no user ID" });
+    }
+
     const item = await WardrobeModel.create({
       userId,
       name,
@@ -37,6 +42,11 @@ router.get("/", async (req, res) => {
   try {
     const userId = req.userId;
 
+    // ✅ VALIDATE USER ID
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - no user ID" });
+    }
+
     const items = await WardrobeModel.find({ userId })
       .sort({ createdAt: -1 });
 
@@ -54,7 +64,27 @@ router.get("/", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
   try {
-    const item = await WardrobeModel.findByIdAndDelete(req.params.id);
+    const userId = req.userId;
+
+    // ✅ VALIDATE USER ID
+    if (!userId) {
+      return res.status(401).json({ error: "Unauthorized - no user ID" });
+    }
+
+    const itemId = req.params.id;
+
+    // ✅ Verify user owns the item
+    const item = await WardrobeModel.findById(itemId);
+
+    if (!item) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+
+    if (item.userId.toString() !== userId.toString()) {
+      return res.status(403).json({ error: "Not authorized to delete this item" });
+    }
+
+    await WardrobeModel.findByIdAndDelete(itemId);
 
     res.json({ message: "Item deleted", item });
 

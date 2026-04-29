@@ -39,6 +39,11 @@ router.post("/signup", async (req, res) => {
       return res.status(400).json({ error: "Name, email, and password are required" });
     }
 
+    // ✅ Validate age if provided
+    if (age && (isNaN(age) || age < 13 || age > 120)) {
+      return res.status(400).json({ error: "Age must be between 13 and 120" });
+    }
+
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: "Email already exists" });
@@ -48,7 +53,7 @@ router.post("/signup", async (req, res) => {
 
     const user = await UserModel.create({
       name,
-      age,
+      age: age || null,
       email,
       password: hashedPassword,
       avatar: `https://ui-avatars.com/api/?name=${encodeURIComponent(name || "User")}&background=random`,
