@@ -356,6 +356,8 @@ export function Community() {
                     type="file"
                     accept="image/*"
                     onChange={handleImageSelect}
+                    title="Upload image for post"
+                    aria-label="Upload image for post"
                     className="hidden"
                   />
                 </div>
@@ -408,9 +410,6 @@ export function Community() {
               <div
                 key={post._id}
                 className="bg-white rounded-lg sm:rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-xl transition-all duration-300 animate-in fade-in slide-in-from-bottom-4"
-                style={{
-                  animationDelay: `${index * 50}ms`,
-                }}
               >
                 {/* Post Header */}
                 <div className="p-3 sm:p-4">
@@ -432,6 +431,7 @@ export function Community() {
                     {post.userId._id === userId && (
                       <button
                         onClick={() => deletePost(post._id)}
+                        title="Delete post"
                         className="text-gray-400 hover:text-red-500 transition-all duration-200 p-1 min-h-[32px] min-w-[32px] flex items-center justify-center"
                       >
                         <Trash2 size={16} />

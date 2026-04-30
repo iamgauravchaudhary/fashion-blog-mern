@@ -308,8 +308,8 @@ export function AIStylistChat() {
             <div className="bg-white border border-gray-200 px-4 py-3 rounded-xl">
               <div className="flex gap-1">
                 <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: "0.2s" }}></div>
-                <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: "0.4s" }}></div>
+                <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce animate-delay-200"></div>
+                <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce animate-delay-400"></div>
               </div>
             </div>
           </div>
@@ -325,7 +325,7 @@ export function AIStylistChat() {
           multiple
           accept="image/*"
           onChange={handleFiles}
-          style={{ display: "none" }}
+          className="hidden"
         />
 
         {imagePreview.length > 0 && (
@@ -379,6 +379,7 @@ export function AIStylistChat() {
             <button
               onClick={() => handleSendMessage()}
               disabled={loading || (!inputMessage.trim() && !files.length)}
+              title="Send message"
               className="w-9 h-9 sm:w-10 sm:h-10 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg hover:shadow-md transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0 min-h-[40px]"
             >
               <Send size={16} className="sm:w-5 sm:h-5" />

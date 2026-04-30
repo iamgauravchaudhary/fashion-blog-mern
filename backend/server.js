@@ -18,7 +18,20 @@ const savedOutfitRoutes = (await import("./routes/savedOutfits.js")).default;
 const app = express();
 
 // ✅ Middleware
-app.use(cors());
+const corsOptions = {
+  origin: [
+    "http://localhost:5173",      // Local development
+    "http://localhost:3000",      // Alternative local
+    "https://fashion-vlog.vercel.app", // Production Vercel domain
+    "https://fashion-blog-mern-1.onrender.com", // Render deployment
+    process.env.FRONTEND_URL      // From .env if specified
+  ].filter(Boolean),
+  credentials: true,             // ✅ Allow credentials (cookies, auth headers)
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+};
+
+app.use(cors(corsOptions));
 app.use(express.json({ limit: "50mb" }));
 
 // ✅ Multer setup for file uploads (memory storage - no disk)
@@ -88,13 +101,13 @@ app.get("/", (req, res) => {
   res.json({ status: "ok", message: "StyleVibe backend is running ✅" });
 });
 
-// ✅ ROUTE MOUNTING - All routing is handled by these module routers
-app.use("/auth", authRoutes);
+// ✅ ROUTE MOUNTING - All routing is handled by these module routers (consistent /api prefix)
+app.use("/api/auth", authRoutes);
 app.use("/api/chat", authMiddleware, chatRoutes);
-app.use("/wardrobe", authMiddleware, wardrobeRoutes);
-app.use("/outfits", authMiddleware, outfitRoutes);
-app.use("/posts", authMiddleware, upload.single("image"), communityRoutes);
-app.use("/saved", authMiddleware, savedOutfitRoutes);
+app.use("/api/wardrobe", authMiddleware, wardrobeRoutes);
+app.use("/api/outfits", authMiddleware, outfitRoutes);
+app.use("/api/posts", authMiddleware, upload.single("image"), communityRoutes);
+app.use("/api/saved", authMiddleware, savedOutfitRoutes);
 
 // ✅ SERVER STARTUP
 const PORT = process.env.PORT || 5000;

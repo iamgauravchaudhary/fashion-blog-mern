@@ -30,7 +30,7 @@ export function AuthPage() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // ✅ Prevent page reload
     setError("");
     setLoading(true);
 
@@ -53,6 +53,7 @@ export function AuthPage() {
         }
 
         try {
+          console.log("📤 Sending signup request...");
           const data = await apiCall(API_ENDPOINTS.SIGNUP, {
             method: "POST",
             data: {
@@ -73,8 +74,12 @@ export function AuthPage() {
 
           setError(data?.message || "Signup failed");
         } catch (err: any) {
-          const errorMsg = err?.response?.data?.message || err?.message || "Signup error";
-          setError(`Signup failed: ${errorMsg}`);
+          const errorMsg =
+            err?.response?.data?.message ||
+            err?.response?.data?.error ||
+            err?.message ||
+            "Signup error";
+          setError(`❌ Signup failed: ${errorMsg}`);
           console.error("Signup error:", err);
         }
       }
@@ -83,6 +88,7 @@ export function AuthPage() {
       // =====================
       else {
         try {
+          console.log("📤 Sending login request to:", API_ENDPOINTS.LOGIN);
           const data = await apiCall(API_ENDPOINTS.LOGIN, {
             method: "POST",
             data: {
@@ -94,16 +100,33 @@ export function AuthPage() {
           if (data?.token) {
             localStorage.setItem("token", data.token);
             localStorage.setItem("userId", data.userId);
-            console.log("✅ Login successful");
+            console.log("✅ Login successful, redirecting...");
             navigate("/");
             return;
           }
 
           setError(data?.message || "Login failed: No token received");
         } catch (err: any) {
-          const errorMsg = err?.response?.data?.message || err?.message || "Login error";
-          setError(`Login failed: ${errorMsg}`);
-          console.error("Login error:", err);
+          console.error("Login error details:", err);
+
+          // ✅ Better error handling
+          let errorMsg = "Login failed";
+
+          if (err?.message?.includes("Network")) {
+            errorMsg = "🌐 Network error - Backend may be offline";
+          } else if (err?.message?.includes("timeout")) {
+            errorMsg = "⏱️ Request timeout - Backend is slow to respond";
+          } else if (err?.message?.includes("404")) {
+            errorMsg = "🚫 Endpoint not found - Server configuration issue";
+          } else if (err?.message?.includes("401")) {
+            errorMsg = "🔐 Invalid email or password";
+          } else if (err?.message?.includes("Invalid credentials")) {
+            errorMsg = "🔐 Invalid email or password";
+          } else {
+            errorMsg = `❌ ${err?.message || "Login error"}`;
+          }
+
+          setError(errorMsg);
         }
       }
     } finally {

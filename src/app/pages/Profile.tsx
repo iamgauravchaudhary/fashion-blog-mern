@@ -246,6 +246,8 @@ export function Profile() {
         <div className="flex items-start justify-between gap-3">
           <img
             src={user.avatar}
+            alt={`${user.name}'s profile picture`}
+            title="User avatar"
             className="w-16 h-16 sm:w-24 sm:h-24 rounded-full border-2 border-white/30"
           />
 

@@ -253,13 +253,13 @@ router.delete("/comment/:id/:commentId", async (req, res) => {
       return res.status(403).json({ error: "Not authorized to delete this comment" });
     }
 
-    const savedOutfit = await SavedOutfitModel.findByIdAndUpdate(
+    const updatedOutfit = await SavedOutfitModel.findByIdAndUpdate(
       id,
       { $pull: { comments: { _id: commentId } } },
       { new: true }
     ).populate("userId", "name avatar").populate("comments.userId", "name avatar");
 
-    res.json(savedOutfit);
+    res.json(updatedOutfit);
 
   } catch (err) {
     console.error(err);

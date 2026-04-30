@@ -226,6 +226,7 @@ export function MyWardrobe() {
               <select
                 value={formData.category}
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                title="Select item category"
                 className="w-full px-3 sm:px-4 py-2 text-xs sm:text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 {categories.filter(c => c !== "All").map(cat => (
@@ -242,6 +243,7 @@ export function MyWardrobe() {
               <select
                 value={formData.color}
                 onChange={(e) => setFormData({ ...formData, color: e.target.value })}
+                title="Select item color"
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
               >
                 {colors.map(color => (
